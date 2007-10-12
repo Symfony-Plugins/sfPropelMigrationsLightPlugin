@@ -1,12 +1,12 @@
 = sfPropelMigrationsLightPlugin =
 
-Easily change the database structure without loosing any data. 
+Easily change the database structure without loosing any data.
 
 == What it is ==
 
 Migrations are a cool thing that I first saw in [http://www.rubyonrails.org/ RoR]. They allow you to change the database structure between application revisions without losing data, in essence "a system that automates the process of keeping the schema just as flexible as the code basis as soon as your application enters maintanance or production". Have a look at their [http://media.rubyonrails.org/video/migrations.mov screencast] to see what it is all about.
 
-This plugins is called "light", because it doesn't do any RDBMS-abstraction. So you'll have to manually write SQL code. It currently works quite alright for me, though.
+This plugins is called "light", because it doesn't do any RDBMS-abstraction. So you'll have to manually write SQL code. It currently works quite alright for me, though. And you don't have to write all the SQL code manually of course. Actually you'll just make a {{{diff}}} of the {{{schema.sql}}} file created by propel and copy'n'paste the right parts of it in a new migration file.
 I think something more general is planned for [http://propel.phpdb.org/trac/wiki/Development/Roadmap Propel 2.0].
 
 
@@ -27,7 +27,7 @@ The plugin provides a {{{init-migration}}} task. So run {{{php symfony init-migr
 
 Then put code into the {{{up()}}} and {{{down()}}} methods.
 The {{{up()}}} code should bring the DB structure to the new version. The {{{down()}}} method should revert what was done in {{{up()}}}.
-To do that you can use the parent class' (sfMigration) methods, e.g. {{{executeSQL()}}}.
+To do that you can use the parent class' (sfMigration) methods, e.g. {{{executeSQL()}}}. Have a look at the [source:plugins/sfPropelMigrationsLightPlugin/trunk/lib/sfMigration.class.php source code] to see what else there is.
 
 This might look like that in a simple case:
 {{{
