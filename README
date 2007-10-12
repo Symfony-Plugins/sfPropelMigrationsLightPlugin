@@ -1,6 +1,6 @@
 = sfPropelMigrationsLightPlugin =
 
-Easily change the database structure without loosing any data.
+Easily change the database structure without losing any data.
 
 == What it is ==
 
@@ -23,7 +23,7 @@ You also can install manually by downloading the attached file or checking out f
 == Usage ==
 
 === step one -- create migration ===
-The plugin provides a {{{init-migration}}} task. So run {{{php symfony init-migration migration_name}}}. This will generate a new migration class stub in the migrations directory. The migration name is purely informational. I doesn't have to be unique.
+The plugin provides an {{{init-migration}}} task. So run {{{php symfony init-migration migration_name}}}. This will generate a new migration class stub in the migrations directory. The migration name is purely informational. I doesn't have to be unique.
 
 Then put code into the {{{up()}}} and {{{down()}}} methods.
 The {{{up()}}} code should bring the DB structure to the new version. The {{{down()}}} method should revert what was done in {{{up()}}}.
