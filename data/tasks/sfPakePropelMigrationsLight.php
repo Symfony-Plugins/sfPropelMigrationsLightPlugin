@@ -50,7 +50,7 @@ function run_migrate($task, $args)
     throw new Exception('You must provide a app.');
   }
 
-  $app = $args[0];
+  @list($app, $env) = explode(':', $args[0]);
 
   if (!is_dir(sfConfig::get('sf_app_dir').DIRECTORY_SEPARATOR.$app))
   {
@@ -60,7 +60,7 @@ function run_migrate($task, $args)
   // define constants
   define('SF_ROOT_DIR',    sfConfig::get('sf_root_dir'));
   define('SF_APP',         $app);
-  define('SF_ENVIRONMENT', 'cli');
+  define('SF_ENVIRONMENT', ($env)?$env:'cli');
   define('SF_DEBUG',       true);
 
   // get configuration

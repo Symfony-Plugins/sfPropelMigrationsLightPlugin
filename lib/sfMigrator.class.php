@@ -118,11 +118,9 @@ class %MigrationClassName% extends sfMigration {
    */
   protected function setCurrentVersion($version)
   {
-    $conn = Propel::getConnection();
-
     $version = (int)$version;
 
-    $conn->executeUpdate("UPDATE schema_info SET version = $version");
+    self::executeUpdate("UPDATE schema_info SET version = $version");
   }
 
   /**
@@ -140,7 +138,11 @@ class %MigrationClassName% extends sfMigration {
     // iterate over all needed migrations
     for ($i = $from; $i > $to; $i--)
     {
-      $con->begin();
+      if ($con instanceof PropelPDO) {
+        $con->beginTransaction();
+      } else {
+        $con->begin();
+      }
       try
       {
         $migration = $this->getMigrationObject($i);
@@ -173,11 +175,15 @@ class %MigrationClassName% extends sfMigration {
   {
     $con = Propel::getConnection();
     $counter = 0;
-    
+
     // iterate over all needed migrations
     for ($i = $from + 1; $i <= $to; $i++)
     {
-      $con->begin();
+      if ($con instanceof PropelPDO) {
+        $con->beginTransaction();
+      } else {
+        $con->begin();
+      }
       try
       {
         $migration = $this->getMigrationObject($i);
@@ -303,31 +309,42 @@ class %MigrationClassName% extends sfMigration {
    */
   public function getCurrentVersion() 
   {
-    $conn = Propel::getConnection();
-    
     // check if schema_info table exists
-    $rs = $conn->executeQuery("SHOW TABLES LIKE 'schema_info'");
-    if ($rs->getRecordCount() == 1)
+    $result = self::executeQuery("SHOW TABLES LIKE 'schema_info'");
+    if ($result instanceof PDOStatement) {
+      $exists = ($result->rowCount() == 1);
+    } else {
+      $exists = ($rs->getRecordCount() == 1);
+    }
+    
+    if ($exists)
     {
-      $rs = $conn->executeQuery("SELECT version FROM schema_info");
-      
-      if ($rs->next())
+      $result = self::executeQuery("SELECT version FROM schema_info");
+
+      if ($result instanceof PDOStatement) 
       {
-        $currentVersion = $rs->getInt("version");
-      }
-      else
+        $currentVersion = $result->fetchColumn(0);
+      } 
+      else 
       {
-        throw new sfDatabaseException("unable to retrieve current schema version");
+        if ($rs->next())
+        {
+          $currentVersion = $rs->getInt("version");
+        }
+        else
+        {
+          throw new sfDatabaseException("unable to retrieve current schema version");
+        }
       }
     }
     else
     {
       // no schema_info table exists yet
       // so we create it
-      $conn->executeUpdate("CREATE TABLE schema_info (version INTEGER UNSIGNED)");
+      self::executeUpdate("CREATE TABLE schema_info (version INTEGER UNSIGNED)");
       // and insert the version record
       // if no schema_info existed before, we'll call that version 0
-      $conn->executeUpdate("INSERT INTO schema_info SET version = 0");
+      self::executeUpdate("INSERT INTO schema_info SET version = 0");
       $currentVersion = 0;
     }
     
@@ -341,6 +358,7 @@ class %MigrationClassName% extends sfMigration {
    */
   public function getMigrationNumberFromFile($file) 
   {
+    $matches = array();
     $match_count = preg_match('#'.preg_quote(DIRECTORY_SEPARATOR, '#').'(\d{3}).*\.php$#', $file, $matches);
     $number = $matches[1];
     
@@ -359,5 +377,33 @@ class %MigrationClassName% extends sfMigration {
   public function getMigrationsFixturesDir()
   {
     return $this->getMigrationsDir().DIRECTORY_SEPARATOR.'fixtures';
+  }
+  
+  public static function executeUpdate($sql)
+  {
+    $connection = Propel::getConnection();
+    
+    if (version_compare(Propel::VERSION, "1.3.x", ">=")) {
+      return $connection->exec($sql);
+    } else {
+      return $connection->executeUpdate($sql);
+    }
+  }
+  
+  public static function executeQuery($sql, $fetchmode = null)
+  {
+    $connection = Propel::getConnection();
+    
+    if (version_compare(Propel::VERSION, "1.3.x", ">=")) 
+    {
+      $stmt = $connection->prepare($sql);
+      $stmt->execute();
+      
+      return $stmt;
+    }
+    else 
+    {
+      return $connection->executeQuery($sql, $fetchmode);
+    }
   }
 }

@@ -17,7 +17,6 @@
  */
 abstract class sfMigration
 {
-  private $dbConnection = null;
   private $migrator = null;
   private $migrationNumber = null;
 
@@ -29,7 +28,6 @@ abstract class sfMigration
    */
   public function __construct(sfMigrator $migrator, $migrationNumber)
   {
-    $this->dbConnection = Propel::getConnection();
     $this->migrator = $migrator;
     $this->migrationNumber = $migrationNumber;
   }
@@ -51,7 +49,7 @@ abstract class sfMigration
    */
   protected function getConnection()
   {
-    return $this->dbConnection;
+    return Propel::getConnection();
   }
   
   /**
@@ -81,7 +79,7 @@ abstract class sfMigration
    */
   protected final function executeSQL($sql)
   {
-    return $this->getConnection()->executeUpdate($sql);
+    return sfMigrator::executeUpdate($sql);
   }
 
   /**
@@ -94,7 +92,7 @@ abstract class sfMigration
    */
   protected final function executeQuery($sql, $fetchmode = null)
   {
-    return $this->getConnection()->executeQuery($sql, $fetchmode);
+    return sfMigrator::executeQuery($sql, $fetchmode);
   }
 
   /**
@@ -115,7 +113,7 @@ abstract class sfMigration
       $sql += " DEFAULT $default"; 
     }
 
-    return $this->executeSQL($sql);
+    return sfMigrator::executeSQL($sql);
   }
 
   /**
