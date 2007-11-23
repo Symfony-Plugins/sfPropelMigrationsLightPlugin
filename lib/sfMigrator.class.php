@@ -311,10 +311,12 @@ class %MigrationClassName% extends sfMigration {
   {
     // check if schema_info table exists
     $result = self::executeQuery("SHOW TABLES LIKE 'schema_info'");
+
+    $exists = false;
     if ($result instanceof PDOStatement) {
       $exists = ($result->rowCount() == 1);
     } else {
-      $exists = ($rs->getRecordCount() == 1);
+      $exists = ($result->getRecordCount() == 1);
     }
     
     if ($exists)
@@ -327,9 +329,9 @@ class %MigrationClassName% extends sfMigration {
       } 
       else 
       {
-        if ($rs->next())
+        if ($result->next())
         {
-          $currentVersion = $rs->getInt("version");
+          $currentVersion = $result->getInt("version");
         }
         else
         {
