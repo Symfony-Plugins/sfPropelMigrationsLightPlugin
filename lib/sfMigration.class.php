@@ -96,21 +96,25 @@ abstract class sfMigration
   }
 
   /**
-   * adds a column to an existing table [untested]
+   * Adds a column to an existing table 
    *
-   * @param string $table the table name
-   * @param string $column the name of the column to add
-   * @param string $type the type of the column to add
-   * @param bool $notNull if the column should be NOT NULL
-   * @param mixed $default default value for the column
+   * @param  string  $table   the table name
+   * @param  string  $column  the name of the column to add
+   * @param  string  $type    the type of the column to add
+   * @param  bool    $notNull if the column should be NOT NULL
+   * @param  mixed   $default default value for the column
    */
   protected function addColumn($table, $column, $type, $notNull = false, $default = null)
   {
     $sql = "ALTER TABLE $table ADD COLUMN $column $type";
-    if ($notNull) { $sql += " NOT NULL"; }
+    if ($notNull) { 
+      $sql .= " NOT NULL";
+    }
     if ($default !== null) { 
-      if (!is_int($default)) { $default = "'" . $default . "'"; }
-      $sql += " DEFAULT $default"; 
+      if (!is_int($default)) {
+        $default = "'" . $default . "'";
+      }
+      $sql .= " DEFAULT $default"; 
     }
 
     return sfMigrator::executeSQL($sql);

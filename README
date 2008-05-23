@@ -79,6 +79,9 @@ Then, in {{{Migration042::up()}}} you'd write {{{$this->loadFixtures();}}} at so
 
 == Changelog ==
 
+=== 2008-05-23 | 1.0.1 ===
+* develop7: fixed syntax error in sfMigration::addColumn()
+ 
 === 2007-10-12 | 0.5.0 Beta ===
 
 Finally released as a plugin. This is my first plugin, hope everything works...
