@@ -117,7 +117,7 @@ abstract class sfMigration
       $sql .= " DEFAULT $default"; 
     }
 
-    return sfMigrator::executeSQL($sql);
+    return self::executeSQL($sql);
   }
 
   /**
