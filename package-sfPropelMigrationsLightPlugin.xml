@@ -17,10 +17,16 @@
 		<email>trickster2k4@gmail.com</email>
 		<active>yes</active>
 	</contributor>
+	<contributor>
+		<name>Kris Wallsmith</name>
+		<user>Kris.Wallsmith</user>
+		<email>kris.wallsmith@gmail.com</email>
+		<active>yes</active>
+	</contributor>
 	<date>[automatic]</date>
 	<version>
-		<release>1.0.1</release>
-		<api>1.0.1</api>
+		<release>1.1.0</release>
+		<api>1.1.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -41,8 +47,8 @@
 				<name>symfony</name>
 				<channel>pear.symfony-project.com</channel>
 				<min>0.8.1</min>
-				<max>1.1.0</max>
-				<exclude>1.1.0</exclude>
+				<max>1.2.0</max>
+				<exclude>1.2.0</exclude>
 			</package>
 		</required>
 	</dependencies>

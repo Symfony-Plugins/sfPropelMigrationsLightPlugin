@@ -1,15 +1,16 @@
 <?php
+
 /*
  * This file is part of the sfPropelMigrationsLightPlugin package.
- * (c) 2006-2007 Martin Kreidenweis <sf@kreidenweis.com>
- *
+ * (c) 2006-2008 Martin Kreidenweis <sf@kreidenweis.com>
+ * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
- * Base class for all Migrations
- *
+ * Base class for all migrations.
+ * 
  * @package    symfony
  * @subpackage plugin
  * @author     Martin Kreidenweis <sf@kreidenweis.com>
@@ -17,86 +18,81 @@
  */
 abstract class sfMigration
 {
-  private $migrator = null;
-  private $migrationNumber = null;
+  protected
+    $migrator        = null,
+    $migrationNumber = null;
 
   /**
-   * constructor
-   *
-   * @param sfMigrator $migrator   the migrator instance calling this migration
-   * @param int $migrationNumber  the DB version the migration (up) will migrates to
+   * Constructor.
+   * 
+   * @param sfMigrator $migrator        The migrator instance calling this migration
+   * @param integer    $migrationNumber The DB version the migration (up) will migrate to
    */
   public function __construct(sfMigrator $migrator, $migrationNumber)
   {
     $this->migrator = $migrator;
     $this->migrationNumber = $migrationNumber;
   }
-  
+
   /**
-   * returns the migrator instance that called the migration
-   *
+   * Get the migrator instance that called this migration.
+   * 
    * @return sfMigrator
    */
   public function getMigrator()
   {
     return $this->migrator;
   }
-  
+
   /**
-   * returns the Propel connection
-   *
-   * @return Connection
+   * Get the Propel connection.
+   * 
+   * @return mixed
    */
   protected function getConnection()
   {
     return Propel::getConnection();
   }
-  
+
   /**
-   * returns the migration number of this migration
-   *
-   * @param mixed $formatted  if true the result is a zero-padded string, otherwise an int is returned
-   * @return mixed
+   * Get the migration number of this migration.
+   * 
+   * @param   boolean $formatted If true the result is a zero-padded string, otherwise an integer is returned
+   * 
+   * @return  mixed
    */
   protected function getMigrationNumber($formatted = true)
   {
-    if ($formatted)
-    {
-      return sprintf("%03d", $this->migrationNumber);
-    }
-    else
-    {
-      return (int)$this->migrationNumber;
-    }
+    return $formatted ? sprintf('%03d', $this->migrationNumber) : (int) $this->migrationNumber;
   }
-  
+
   /**
-   * Executes a SQL statement, returns the number of affected rows
-   *
-   * @param string $sql the SQL code to execute
-   * @return number of affected rows
-   * @throws SQLException
+   * Execute a SQL statement.
+   * 
+   * @param   string $sql the SQL code to execute
+   * 
+   * @return  integer Number of affected rows
    */
-  protected final function executeSQL($sql)
+  protected function executeSQL($sql)
   {
     return sfMigrator::executeUpdate($sql);
   }
 
   /**
-   * Executes the SQL query and returns the resultset.
+   * Execute a SQL query.
    * 
-   * @param string $sql The SQL statement.
-   * @param int $fetchmode
-   * @return object ResultSet
-   * @throws SQLException if a database access error occurs.
+   * @param   string $sql The SQL statement.
+   * @param   integer $fetchmode
+   * 
+   * @return  mixed
    */
-  protected final function executeQuery($sql, $fetchmode = null)
+  protected function executeQuery($sql, $fetchmode = null)
   {
     return sfMigrator::executeQuery($sql, $fetchmode);
   }
 
   /**
-   * Adds a column to an existing table 
+   * Add a column to an existing table.
    *
    * @param  string  $table   the table name
    * @param  string  $column  the name of the column to add
@@ -106,53 +102,84 @@ abstract class sfMigration
    */
   protected function addColumn($table, $column, $type, $notNull = false, $default = null)
   {
-    $sql = "ALTER TABLE $table ADD COLUMN $column $type";
-    if ($notNull) { 
-      $sql .= " NOT NULL";
-    }
-    if ($default !== null) { 
-      if (!is_int($default)) {
-        $default = "'" . $default . "'";
-      }
-      $sql .= " DEFAULT $default"; 
+    $sql = sprintf('ALTER TABLE %s ADD COLUMN %s %s', $table, $column, $type);
+
+    if ($notNull)
+    {
+      $sql .= ' NOT NULL';
     }
 
-    return self::executeSQL($sql);
+    if (!is_null($default))
+    {
+      if (!ctype_digit($default))
+      {
+        $default = '"'.$default.'"';
+      }
+
+      $sql .= ' DEFAULT '.$default;
+    }
+
+    return $this->executeSQL($sql);
   }
 
   /**
    * Loads the fixture files of the migration.
+   * 
    * Has to be called manually.
-   *
-   * Be careful. Due to the nature Propel and fixture-loading works you'll probably get problems
-   * when you change the definitions of affected tables in later migrations.
-   *
-   * @param bool $deleteOldRecords  whether the affected tables' content should be deleted prior to loading the fixtures, default: false
+   * 
+   * Be careful. Due to the nature Propel and fixture-loading works you'll 
+   * probably get problems when you change the definitions of affected tables 
+   * in later migrations.
+   * 
+   * @param boolean $deleteOldRecords Whether the affected tables' content should be deleted prior to loading the fixtures, default: false
    */
   protected function loadFixtures($deleteOldRecords = false)
   {
-    $fixturesDir = $this->getMigrator()->getMigrationsFixturesDir() . DIRECTORY_SEPARATOR . $this->getMigrationNumber();
-    
+    $fixturesDir = $this->getMigrator()->getMigrationsFixturesDir().DIRECTORY_SEPARATOR.$this->getMigrationNumber();
+
     if (!is_dir($fixturesDir))
     {
-      throw new sfException("no fixtures exist for migration " . $this->getMigrationNumber());
+      throw new sfException('No fixtures exist for migration '.$this->getMigrationNumber());
     }
-    
+
     $data = new sfPropelData();
     $data->setDeleteCurrentData($deleteOldRecords);
     $data->loadData($fixturesDir, 'symfony');
   }
 
   /**
-   * begins a transaction
+   * Execute SQL from a file.
+   * 
+   * @param   string $file Path to the SQL file
    */
-  protected function begin()
+  protected function loadSql($file)
   {
-    $this->getConnection()->begin();
+    if (!is_readable($file))
+    {
+      throw new sfException(sprintf('The SL file %s does not exist or is not readable.', $file));
+    }
+
+    foreach (explode(';', file_get_contents($file)) as $query)
+    {
+      if (trim($query))
+      {
+        $this->executeQuery($query);
+      }
+    }
   }
 
   /**
-   * commits transaction
+   * Begin a transaction.
+   */
+  protected function begin()
+  {
+    $con = $this->getConnection();
+
+    $con instanceof PropelPDO ? $con->beginTransaction() : $con->begin();
+  }
+
+  /**
+   * Commit a transaction.
    */
   protected function commit()
   {
@@ -160,7 +187,7 @@ abstract class sfMigration
   }
 
   /**
-   * rolls back transaction
+   * Rollback a transaction.
    */
   protected function rollback()
   {
@@ -168,7 +195,9 @@ abstract class sfMigration
   }
 
   /**
-   * output some diagnostic or informational message
+   * Output some diagnostic or informational message.
+   * 
+   * @param   string $text
    */
   protected function diag($text)
   {
@@ -177,12 +206,12 @@ abstract class sfMigration
   }
 
   /**
-   * bring the Database Schema up to the current Version from the previous one
+   * Migrate the schema up, from the previous version to the current one.
    */
   abstract public function up();
 
   /**
-   * bring the schema down to the previous version, i.e. undo the modifications made in up()
+   * Migrate the schema down to the previous version, i.e. undo the modifications made in up()
    */
   abstract public function down();
 }

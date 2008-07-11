@@ -1,13 +1,16 @@
 <?php
+
 /*
  * This file is part of the sfPropelMigrationsLightPlugin package.
- * (c) 2006-2007 Martin Kreidenweis <sf@kreidenweis.com>
- *
+ * (c) 2006-2008 Martin Kreidenweis <sf@kreidenweis.com>
+ * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
+ * Symfony 1.0 tasks for sfPropelMigrationsLightPlugin.
+ * 
  * @package    symfony
  * @subpackage plugin
  * @author     Martin Kreidenweis <sf@kreidenweis.com>
@@ -24,30 +27,29 @@ function run_init_migration($task, $args)
 {
   if (count($args) == 0)
   {
-    throw new Exception('You must provide a migration name.');
+    throw new sfException('You must provide a migration name.');
   }
 
-  if($args[0])
+  if ($args[0])
   {
     $migrator = new sfMigrator();
-    
+
     if (!is_dir($migrator->getMigrationsDir()))
     {
       pake_mkdirs($migrator->getMigrationsDir());
     }
-    
-    pake_echo_action("migrations", "generating new migration stub");
+
+    pake_echo_action('migrations', 'generating new migration stub');
     $filename = $migrator->generateMigration($args[0]);
-    pake_echo_action("file+", $filename);
+    pake_echo_action('file+', $filename);
   }
 }
-
 
 function run_migrate($task, $args)
 {
   if (count($args) == 0)
   {
-    throw new Exception('You must provide a app.');
+    throw new sfException('You must provide a app.');
   }
 
   @list($app, $env) = explode(':', $args[0]);
@@ -60,7 +62,7 @@ function run_migrate($task, $args)
   // define constants
   define('SF_ROOT_DIR',    sfConfig::get('sf_root_dir'));
   define('SF_APP',         $app);
-  define('SF_ENVIRONMENT', ($env)?$env:'cli');
+  define('SF_ENVIRONMENT', $env ? $env : 'cli');
   define('SF_DEBUG',       true);
 
   // get configuration
@@ -69,25 +71,24 @@ function run_migrate($task, $args)
   $databaseManager = new sfDatabaseManager();
   $databaseManager->initialize();
 
-  
   $migrator = new sfMigrator();
-  
+
   // if no other arguments besides app, then migrate to latest version
   if (count($args) == 1) 
   {
     $runMigrationsCount = $migrator->migrate();
   }
-  elseif (isset($args[1]) && preg_match('/^\d+$/', $args[1]))
+  elseif (isset($args[1]) && ctype_digit($args[1]))
   {
-    $runMigrationsCount = $migrator->migrate((int)$args[1]);
+    $runMigrationsCount = $migrator->migrate($args[1]);
   }
   else
   {
-    throw new Exception("You can provide a destination migration number as a second parameter");
+    throw new sfException('You can provide a destination migration number as a second parameter');
   }
-  
+
   $currentVersion = $migrator->getCurrentVersion();
-  
-  pake_echo_action("migrations", "migrated ".$runMigrationsCount." step(s)");
-  pake_echo_action("migrations", "current database version: ".$currentVersion);
+
+  pake_echo_action('migrations', 'migrated '.$runMigrationsCount.' step(s)');
+  pake_echo_action('migrations', 'current database version: '.$currentVersion);
 }
