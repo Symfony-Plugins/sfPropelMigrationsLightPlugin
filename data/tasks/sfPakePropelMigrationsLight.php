@@ -27,7 +27,7 @@ function run_init_migration($task, $args)
 {
   if (count($args) == 0)
   {
-    throw new sfException('You must provide a migration name.');
+    throw new Exception('You must provide a migration name.');
   }
 
   if ($args[0])
@@ -49,7 +49,7 @@ function run_migrate($task, $args)
 {
   if (count($args) == 0)
   {
-    throw new sfException('You must provide a app.');
+    throw new Exception('You must provide a app.');
   }
 
   @list($app, $env) = explode(':', $args[0]);
@@ -84,7 +84,7 @@ function run_migrate($task, $args)
   }
   else
   {
-    throw new sfException('You can provide a destination migration number as a second parameter');
+    throw new Exception('You can provide a destination migration number as a second parameter');
   }
 
   $currentVersion = $migrator->getCurrentVersion();
