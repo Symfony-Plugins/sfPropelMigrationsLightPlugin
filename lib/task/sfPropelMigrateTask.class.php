@@ -26,7 +26,7 @@ class sfPropelMigrateTask extends sfPropelBaseTask
 
     $this->addOptions(array(
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-      new sfCommandOption('version', 'v', sfCommandOption::PARAMETER_REQUIRED, 'The target schema version'),
+      new sfCommandOption('schema-version', 'v', sfCommandOption::PARAMETER_REQUIRED, 'The target schema version'),
     ));
 
     $this->aliases = array('migrate');
