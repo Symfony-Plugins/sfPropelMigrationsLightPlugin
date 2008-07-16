@@ -33,7 +33,7 @@
 		<api>stable</api>
 	</stability>
 	<license uri="http://www.symfony-project.com/license">MIT license</license>
-	<notes></notes>
+	<notes>-</notes>
 	<contents>[automatic]</contents>
 	<dependencies>
 		<required>
