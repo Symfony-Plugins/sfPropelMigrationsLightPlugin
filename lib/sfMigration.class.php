@@ -132,8 +132,9 @@ abstract class sfMigration
    * in later migrations.
    * 
    * @param boolean $deleteOldRecords Whether the affected tables' content should be deleted prior to loading the fixtures, default: false
+   * @param string  $con Propel connection identifier, as defined in the database.yml file
    */
-  protected function loadFixtures($deleteOldRecords = false)
+  protected function loadFixtures($deleteOldRecords = false, $con = 'symfony')
   {
     $fixturesDir = $this->getMigrator()->getMigrationsFixturesDir().DIRECTORY_SEPARATOR.$this->getMigrationNumber();
 
@@ -144,7 +145,7 @@ abstract class sfMigration
 
     $data = new sfPropelData();
     $data->setDeleteCurrentData($deleteOldRecords);
-    $data->loadData($fixturesDir, 'symfony');
+    $data->loadData($fixturesDir, $con);
   }
 
   /**
@@ -156,7 +157,7 @@ abstract class sfMigration
   {
     if (!is_readable($file))
     {
-      throw new sfException(sprintf('The SL file %s does not exist or is not readable.', $file));
+      throw new sfException(sprintf('The SQL file %s does not exist or is not readable.', $file));
     }
 
     foreach (explode(';', file_get_contents($file)) as $query)
