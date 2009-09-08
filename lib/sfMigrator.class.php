@@ -3,14 +3,14 @@
 /*
  * This file is part of the sfPropelMigrationsLightPlugin package.
  * (c) 2006-2008 Martin Kreidenweis <sf@kreidenweis.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
  * Manage all calls to the sfMigration class instances.
- * 
+ *
  * @package    symfony
  * @subpackage plugin
  * @author     Martin Kreidenweis <sf@kreidenweis.com>
@@ -20,16 +20,16 @@ class sfMigrator
 {
   /**
    * Migration filenames.
-   * 
+   *
    * @var array $migrations
    */
   protected $migrations = array();
 
   /**
    * Perform an update on the database.
-   * 
+   *
    * @param   string $sql
-   * 
+   *
    * @return  integer
    */
   static public function executeUpdate($sql)
@@ -41,16 +41,16 @@ class sfMigrator
 
   /**
    * Perform a query on the database.
-   * 
+   *
    * @param   string $sql
    * @param   string $fetchmode
-   * 
+   *
    * @return  mixed
    */
   static public static function executeQuery($sql, $fetchmode = null)
   {
     $con = Propel::getConnection();
-    
+
     if ($con instanceof PropelPDO)
     {
       $stmt = $con->prepare($sql);
@@ -74,10 +74,10 @@ class sfMigrator
 
   /**
    * Execute migrations.
-   * 
-   * @param   integer $destVersion  Version number to migrate to, defaults to 
+   *
+   * @param   integer $destVersion  Version number to migrate to, defaults to
    *                                the max existing
-   * 
+   *
    * @return  integer Number of executed migrations
    */
   public function migrate($destVersion = null)
@@ -118,12 +118,12 @@ class sfMigrator
 
   /**
    * Generate a new migration stub
-   * 
+   *
    * @param   string $name Name of the new migration
-   * 
+   *
    * @return  string Filename of the new migration file
    */
-  public function generateMigration($name) 
+  public function generateMigration($name)
   {
     // calculate version number for new migration
     $maxVersion = sprintf('%03d', $this->getMaxVersion());
@@ -176,7 +176,7 @@ EOF;
 
   /**
    * Get the list of migration filenames.
-   * 
+   *
    * @return array
    */
   public function getMigrations()
@@ -187,7 +187,7 @@ EOF;
   /**
    * @return integer The lowest migration that exists
    */
-  public function getMinVersion() 
+  public function getMinVersion()
   {
     return $this->migrations ? $this->getMigrationNumberFromFile($this->migrations[0]) : 0;
   }
@@ -204,21 +204,17 @@ EOF;
 
   /**
    * Get the current schema version from the database.
-   * 
-   * If no schema version is currently stored in the database, one is created 
+   *
+   * If no schema version is currently stored in the database, one is created
    * and initialized with 0.
    *
    * @return integer
    */
-  public function getCurrentVersion() 
+  public function getCurrentVersion()
   {
-    // check if schema_info table exists
-    $result = $this->executeQuery('SHOW TABLES LIKE "schema_info"');
-
-    if ($result instanceof PDOStatement ? $result->rowCount() : $result->getRecordCount())
+    try
     {
       $result = $this->executeQuery('SELECT version FROM schema_info');
-
       if ($result instanceof PDOStatement)
       {
         $currentVersion = $result->fetchColumn(0);
@@ -227,7 +223,7 @@ EOF;
       {
         if ($result->next())
         {
-          $currentVersion = $result->getInt("version");
+          $currentVersion = $result->getInt('version');
         }
         else
         {
@@ -235,27 +231,27 @@ EOF;
         }
       }
     }
-    else
+    catch (Exception $e)
     {
-      // no schema_info table exists yet so we create it
-      $this->executeUpdate('CREATE TABLE schema_info (version INTEGER UNSIGNED)');
+      // assume no schema_info table exists yet so we create it
+      $this->executeUpdate('CREATE TABLE schema_info (version INTEGER)');
 
       // and insert the version record as 0
-      $this->executeUpdate('INSERT INTO schema_info SET version = 0');
+      $this->executeUpdate('INSERT INTO schema_info (version) VALUES (0)');
       $currentVersion = 0;
     }
 
     return $currentVersion;
   }
-  
+
   /**
    * Get the number encoded in the given migration file name.
-   * 
+   *
    * @param   string $file The filename to look at
-   * 
+   *
    * @return  integer
    */
-  public function getMigrationNumberFromFile($file) 
+  public function getMigrationNumberFromFile($file)
   {
     $number = substr(basename($file), 0, 3);
 
@@ -269,17 +265,17 @@ EOF;
 
   /**
    * Get the directory where migration classes are saved.
-   * 
+   *
    * @return  string
    */
-  public function getMigrationsDir() 
+  public function getMigrationsDir()
   {
     return sfConfig::get('sf_data_dir').DIRECTORY_SEPARATOR.'migrations';
   }
 
   /**
    * Get the directory where migration fixtures are saved.
-   * 
+   *
    * @return  string
    */
   public function getMigrationsFixturesDir()
@@ -289,7 +285,7 @@ EOF;
 
   /**
    * Write the given version as current version to the database.
-   * 
+   *
    * @param integer $version New current version
    */
   protected function setCurrentVersion($version)
@@ -301,10 +297,10 @@ EOF;
 
   /**
    * Migrate down, from version $from to version $to.
-   * 
+   *
    * @param   integer $from
    * @param   integer $to
-   * 
+   *
    * @return  integer Number of executed migrations
    */
   protected function migrateDown($from, $to)
@@ -340,7 +336,7 @@ EOF;
 
   /**
    * Migrate up, from version $from to version $to.
-   * 
+   *
    * @param   integer $from
    * @param   integer $to
    * @return  integer Number of executed migrations
@@ -378,9 +374,9 @@ EOF;
 
   /**
    * Get the migration object for the given version.
-   * 
+   *
    * @param   integer $version
-   * 
+   *
    * @return  sfMigration
    */
   protected function getMigrationObject($version)
@@ -398,7 +394,7 @@ EOF;
    * Version to filename.
    *
    * @param   integer $version
-   * 
+   *
    * @return  string Filename
    */
   protected function getMigrationFileName($version)
@@ -420,7 +416,7 @@ EOF;
       $minVersion = $this->getMinVersion();
       $maxVersion = $this->getMaxVersion();
 
-      if (1 != $minVersion) 
+      if (1 != $minVersion)
       {
         throw new sfInitializationException('First migration is not migration 1. Some migration files may be missing.');
       }
@@ -431,10 +427,10 @@ EOF;
       }
     }
   }
-  
+
   /**
    * Auto generate logic for the first migration.
-   * 
+   *
    * @param   string $name
    * @param   string $newVersion
    * @param   string $upLogic
