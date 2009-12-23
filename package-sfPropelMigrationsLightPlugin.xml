@@ -23,9 +23,15 @@
 		<email>kris.wallsmith@gmail.com</email>
 		<active>yes</active>
 	</contributor>
+  <contributor>
+		<name>Stefan Koopmanschap</name>
+		<user>Stefan.Koopmanschap</user>
+		<email>stefan.koopmanschap@symfony-project.com</email>
+		<active>yes</active>
+	</contributor>
 	<date>[automatic]</date>
 	<version>
-		<release>1.1.2</release>
+		<release>1.1.3</release>
 		<api>1.1.2</api>
 	</version>
 	<stability>
@@ -47,8 +53,8 @@
 				<name>symfony</name>
 				<channel>pear.symfony-project.com</channel>
 				<min>0.8.1</min>
-				<max>1.2.0</max>
-				<exclude>1.2.0</exclude>
+				<max>1.3.0</max>
+				<exclude>1.3.0</exclude>
 			</package>
 		</required>
 	</dependencies>
