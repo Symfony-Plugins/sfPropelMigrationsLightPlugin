@@ -47,7 +47,7 @@ class sfMigrator
    *
    * @return  mixed
    */
-  static public static function executeQuery($sql, $fetchmode = null)
+  static public function executeQuery($sql, $fetchmode = null)
   {
     $con = Propel::getConnection();
 
