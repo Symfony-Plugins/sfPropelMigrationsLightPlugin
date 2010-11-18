@@ -1,63 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.4.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
-	<name>[automatic]</name>
-	<channel>pear.symfony-project.com</channel>
-	<summary>Easily change the database structure without loosing any data.</summary>
-	<description>Easily change the database structure without loosing any data.</description>
-	<lead>
-		<name>Martin Kreidenweis</name>
-		<user>l2k</user>
-		<email>sf@kreidenweis.com</email>
-		<active>no</active>
-	</lead>
-	<contributor>
-		<name>Andrei Dziahel</name>
-		<user>develop7</user>
-		<email>trickster2k4@gmail.com</email>
-		<active>yes</active>
-	</contributor>
-	<contributor>
-		<name>Kris Wallsmith</name>
-		<user>Kris.Wallsmith</user>
-		<email>kris.wallsmith@gmail.com</email>
-		<active>yes</active>
-	</contributor>
-  <contributor>
-		<name>Stefan Koopmanschap</name>
-		<user>Stefan.Koopmanschap</user>
-		<email>stefan.koopmanschap@symfony-project.com</email>
-		<active>yes</active>
-	</contributor>
-	<date>[automatic]</date>
-	<version>
-		<release>1.1.3</release>
-		<api>1.1.2</api>
-	</version>
-	<stability>
-		<release>stable</release>
-		<api>stable</api>
-	</stability>
-	<license uri="http://www.symfony-project.com/license">MIT license</license>
-	<notes>-</notes>
-	<contents>[automatic]</contents>
-	<dependencies>
-		<required>
-			<php>
-				<min>5.1.0</min>
-			</php>
-			<pearinstaller>
-				<min>1.4.1</min>
-			</pearinstaller>
-			<package>
-				<name>symfony</name>
-				<channel>pear.symfony-project.com</channel>
-				<min>0.8.1</min>
-				<max>1.3.0</max>
-				<exclude>1.3.0</exclude>
-			</package>
-		</required>
-	</dependencies>
-	<phprelease></phprelease>
-	<changelog></changelog>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.8.0" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>sfPropelMigrationsLightPlugin</name>
+ <channel>plugins.symfony-project.org</channel>
+ <summary>Easily change the database structure without loosing any data.</summary>
+ <description>Easily change the database structure without loosing any data.</description>
+ <lead>
+  <name>Martin Kreidenweis</name>
+  <user>l2k</user>
+  <email>sf@kreidenweis.com</email>
+  <active>no</active>
+ </lead>
+ <contributor>
+  <name>Andrei Dziahel</name>
+  <user>develop7</user>
+  <email>trickster2k4@gmail.com</email>
+  <active>yes</active>
+ </contributor>
+ <contributor>
+  <name>Kris Wallsmith</name>
+  <user>Kris.Wallsmith</user>
+  <email>kris.wallsmith@gmail.com</email>
+  <active>yes</active>
+ </contributor>
+ <contributor>
+  <name>Stefan Koopmanschap</name>
+  <user>Stefan.Koopmanschap</user>
+  <email>stefan.koopmanschap@symfony-project.com</email>
+  <active>yes</active>
+ </contributor>
+ <contributor>
+  <name>Seb Dangerfield</name>
+  <user>sebsecond2</user>
+  <email>seb.dangerfield@second2.com</email>
+  <active>yes</active>
+ </contributor>
+ <date>[automatic]</date>
+ <version>
+  <release>1.1.4</release>
+  <api>1.1.2</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.symfony-project.com/license">MIT license</license>
+ <notes>
+-
+ </notes>
+ <contents>[automatic]</contents>
+  <dependencies>
+  <required>
+     <php>
+    <min>5.2.4</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.1</min>
+   </pearinstaller>
+   <package>
+    <name>symfony</name>
+    <channel>pear.symfony-project.com</channel>
+    <min>1.1.0</min>
+    <max>1.4.8</max>
+   </package>
+
+  </required>
+ </dependencies>
+ <phprelease/>
+ <changelog>
+ <release>
+   <version>
+    <release>1.1.4</release>
+    <api>1.1.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-11-17</date>
+   <notes>
+* Changed package.xml to include symfony 1.4 in the supported versions
+* Bug fix
+* Removed need to pass an application parameter to the migrate task (this is now optional)
+   </notes>
+  </release>
+  </changelog>
 </package>
